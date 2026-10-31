@@ -18,4 +18,4 @@ Hotkey integration must preserve existing bindings, avoid input grabs, offer rem
 
 Bug reports should include the app version, model, compositor/version, failing control, exact visible error and expected/observed behavior. Optional Diagnostics exports are allowlisted; review them before sharing. Do not attach full journals or serial numbers by default.
 
-The project has not selected a release license or published a repository during this work. Settle the license before treating it as a finished public release.
+Contributions are distributed under the project's GNU General Public License version 3 only (`GPL-3.0-only`). See [LICENSE](LICENSE).

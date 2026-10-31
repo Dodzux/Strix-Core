@@ -76,4 +76,8 @@ python scripts/profile_app.py
 
 The portable tests use fake sysfs/USB objects and mocked commands. Notification tests require PyGObject. The GUI smoke test requires a running Hyprland desktop, opens a separate simulation, and does not write laptop controls. Physical tests require separate explicit approval and observation.
 
-[CONTRIBUTING.md](CONTRIBUTING.md) explains verification expectations. No public release or license selection has been performed as part of this local work.
+[CONTRIBUTING.md](CONTRIBUTING.md) explains verification expectations.
+
+## License
+
+Copyright © 2026 Dodzux. Strix Core is licensed under the **GNU General Public License version 3 only** (`GPL-3.0-only`). See [LICENSE](LICENSE).

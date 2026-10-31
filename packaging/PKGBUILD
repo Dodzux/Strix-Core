@@ -5,6 +5,7 @@ pkgver=0.3.6
 pkgrel=2
 pkgdesc='Native local ROG laptop monitoring and supported controls'
 arch=('any')
+license=('GPL-3.0-only')
 depends=('python' 'python-gobject' 'python-cairo' 'gtk4>=4.24' 'polkit')
 optdepends=('hyprland: windowed application list and graceful close requests'
             'power-profiles-daemon: coordinated performance profile controls'
@@ -38,4 +39,5 @@ package() {
     install -Dm644 README.md "$pkgdir/usr/share/doc/strix-core/README.md"
     install -Dm644 USAGE.md "$pkgdir/usr/share/doc/strix-core/USAGE.md"
     install -Dm644 CONTRIBUTING.md "$pkgdir/usr/share/doc/strix-core/CONTRIBUTING.md"
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/strix-core/LICENSE"
 }
