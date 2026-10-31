@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+.preview/
+build/
+dist/
+*.egg-info/
+pkg/
+src/
+*.pkg.tar.*
+
+# Local instructions, private work log, original brief and design exploration.
+/AGENTS.md
+/MinimalAC.md
+/REPORT.md
+/design/
+/scripts/branding_*.py
+
+# Local recordings and environment/credential files.
+*.mp4
+*.mkv
+*.webm
+*.mov
+.env
+.env.*
+*.pem
+*.key
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/

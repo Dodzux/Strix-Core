@@ -1,0 +1,4 @@
+#!/usr/bin/python -I
+from strix_core.control_helper import main
+
+raise SystemExit(main())

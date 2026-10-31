@@ -1,0 +1,21 @@
+name: Tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y python3-gi python3-cairo gir1.2-gtk-4.0 desktop-file-utils
+      - name: Run isolated unit tests
+        run: /usr/bin/python3 -m unittest discover -s tests -v
+      - name: Compile sources and validate launcher
+        run: |
+          /usr/bin/python3 -m compileall -q strix_core scripts tests
+          desktop-file-validate packaging/io.github.hyprdodz.StrixCore.desktop

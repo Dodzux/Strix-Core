@@ -1,0 +1,77 @@
+window.app-window { background: alpha(@bg, 0.86); background-image: none; backdrop-filter: blur(20px); color: @text; font-family: "CaskaydiaCove Nerd Font", "CaskaydiaCove NF", monospace; font-size: 13px; }
+window.app-window.app-dialog { background: alpha(@bg, 0.92); background-image: none; backdrop-filter: blur(20px); }
+window.app-dialog .dialog-vbox, window.app-dialog .message-area { background: transparent; }
+.app-window headerbar { background: alpha(@side, 0.8); color: @text; border-bottom: 1px solid @line; box-shadow: none; }
+.app-window .sidebar { background: alpha(@side, 0.65); border-right: 1px solid alpha(@line, 0.6); padding: 22px 12px 16px; }
+.brand { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+.brand-sub { font-size: 9px; letter-spacing: 0.6px; color: @muted; }
+.nav { background: transparent; border: none; box-shadow: none; border-radius: 9px; padding: 10px 12px; color: @muted; font-weight: 500; }
+.nav:hover { background: @card; color: @text; }
+.nav.active { background: alpha(@accent, 0.12); color: @accent; }
+.nav-section { color: @muted; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin: 18px 12px 6px; }
+.page { padding: 28px; }
+.page-title { font-size: 26px; font-weight: 700; letter-spacing: -0.8px; }
+.subtitle { color: @muted; font-size: 12px; }
+.section-title { font-size: 15px; font-weight: 700; }
+.eyebrow { color: @muted; font-weight: 700; font-size: 10px; letter-spacing: 1.8px; }
+.card { background: alpha(@card, 0.65); border: 1px solid alpha(@line, 0.8); border-radius: 14px; padding: 20px; }
+.hero { background: linear-gradient(120deg, alpha(@accent, 0.10), alpha(@card, 0.65)); border: 1px solid alpha(@accent, 0.24); border-radius: 14px; padding: 24px; }
+.hero-title { font-size: 23px; font-weight: 700; letter-spacing: -0.5px; }
+.hero-icon { color: @accent; background: alpha(@accent, 0.09); border-radius: 12px; padding: 16px; }
+.metric-title { color: @muted; font-size: 12px; }
+.metric-value { font-size: 29px; font-weight: 700; letter-spacing: -1px; }
+.metric-detail { font-size: 11px; color: @muted; }
+.chip { font-size: 10px; font-weight: 700; letter-spacing: 1px; border-radius: 20px; padding: 6px 10px; background: alpha(@accent, 0.1); color: @accent; }
+.chip.amber { background: alpha(#e5b96d, 0.10); color: #d8ae69; }
+.chip.neutral { background: @side; color: @muted; }
+.accent { color: @accent; }
+.muted { color: @muted; }
+.small { font-size: 11px; }
+.mode { background: alpha(@card, 0.65); color: @text; border: 1px solid @line; border-radius: 12px; padding: 16px; box-shadow: none; }
+.mode:hover { border-color: alpha(@accent, 0.6); }
+.mode.selected { background: alpha(@accent, 0.08); border-color: @accent; }
+.mode-title { font-size: 14px; font-weight: 700; }
+.mode-description { font-size: 11px; color: @muted; }
+.primary { background: @accent; color: @on_accent; border: none; border-radius: 8px; padding: 9px 14px; font-weight: 700; box-shadow: none; }
+.secondary { background: @side; color: @text; border: 1px solid @line; border-radius: 8px; padding: 9px 14px; box-shadow: none; }
+.app-window button:disabled { opacity: 0.4; }
+.app-window button:focus-visible { outline: 2px solid @accent; outline-offset: 2px; }
+.app-window entry, .app-window spinbutton, .app-window dropdown > button { background: @side; color: @text; border: 1px solid @line; border-radius: 8px; box-shadow: none; padding: 5px 8px; }
+.app-window entry.error { border-color: #e27777; }
+.app-window scale trough { background: @line; min-height: 5px; border-radius: 8px; }
+.app-window scale highlight { background: @accent; border-radius: 8px; }
+.app-window scale slider { background: @accent; border: none; box-shadow: none; }
+.app-window progressbar trough { background: @line; border-radius: 5px; min-height: 5px; }
+.app-window progressbar progress { background: @accent; border-radius: 5px; min-height: 5px; }
+.app-window switch:checked { background: @accent; }
+.app-window checkbutton check:checked { background: @accent; color: @bg; }
+.status-bar { border-top: 1px solid @line; padding: 10px 18px; color: @muted; font-size: 10px; background: alpha(@side, 0.8); }
+.notice { background: alpha(@accent, 0.06); border: 1px solid alpha(@accent, 0.16); border-radius: 10px; padding: 14px 18px; }
+.notice.warning { background: alpha(#e5b96d, 0.06); border-color: alpha(#e5b96d, 0.2); }
+.row { padding: 12px 0; border-bottom: 1px solid @line; }
+.row:last-child { border-bottom: none; }
+.mono { font-size: 11px; }
+.fan-rpm { font-size: 23px; font-weight: 650; }
+.app-window separator { background: @line; min-height: 1px; }
+.app-window textview, .app-window textview text { background: @side; color: @text; }
+.app-window label { color: @text; }
+.app-window label.subtitle, .app-window label.muted, .app-window label.metric-title,
+.app-window label.metric-detail, .app-window label.eyebrow, .app-window label.brand-sub,
+.app-window label.nav-section, .app-window label.mode-description, .app-window label.status-bar { color: @muted; }
+.app-window label.accent, .app-window label.chip { color: @accent; }
+.app-window label.chip.amber { color: #d8ae69; }
+.app-window label.chip.neutral { color: @muted; }
+.app-window .nav label { color: @muted; }
+.app-window .nav.active label { color: @accent; }
+.app-window .primary label { color: @on_accent; }
+.app-window switch { background: @line; }
+.app-window switch:checked { background: @accent; }
+.app-window switch slider { background: @card; border: 1px solid @line; }
+.app-window .memory-footer { padding: 16px 22px; border-top: 1px solid @line; background: alpha(@side, 0.94); }
+.app-window .toast { background: @side; border-color: alpha(@accent, 0.6); box-shadow: 0 6px 24px alpha(black, 0.25); }
+.app-window .zone-button { padding: 9px; background: alpha(@card, 0.75); color: @text; border: 1px solid @line; border-radius: 8px; box-shadow: none; }
+.app-window .zone-button:checked { background: alpha(@accent, 0.12); border-color: @accent; }
+.app-window .zone-button:checked label { color: @accent; }
+.app-window .guide { border-color: alpha(@accent, 0.3); }
+.app-window expander > title { padding: 12px 0; }
+.app-window expander > title label { font-weight: 700; }

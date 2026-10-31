@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Strix Core
+GenericName=Laptop Control Center
+Comment=Local ROG laptop monitoring and supported controls
+Exec=strix-core
+Icon=io.github.hyprdodz.StrixCore
+Terminal=false
+Categories=Settings;HardwareSettings;
+Keywords=ASUS;ROG;fans;battery;performance;RGB;
+StartupNotify=true

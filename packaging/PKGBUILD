@@ -1,0 +1,41 @@
+# Local checkout recipe: run makepkg from this packaging directory.
+# Packages the app and a fixed battery/brightness helper; no background service.
+pkgname=strix-core
+pkgver=0.3.6
+pkgrel=2
+pkgdesc='Native local ROG laptop monitoring and supported controls'
+arch=('any')
+depends=('python' 'python-gobject' 'python-cairo' 'gtk4>=4.24' 'polkit')
+optdepends=('hyprland: windowed application list and graceful close requests'
+            'power-profiles-daemon: coordinated performance profile controls'
+            'nvidia-utils: optional telemetry for an already active NVIDIA GPU')
+options=('!debug')
+
+check() {
+    cd "$startdir/.."
+    python -m unittest discover -s tests -q
+}
+
+package() {
+    cd "$startdir/.."
+    local site_packages
+    site_packages=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')
+    local app_file
+    while IFS= read -r -d '' app_file; do
+        install -Dm644 "$app_file" "$pkgdir$site_packages/$app_file"
+    done < <(find strix_core -type f \( -name '*.py' -o -name '*.css' -o -name '*.svg' \) -print0)
+    python -m compileall -q -s "$pkgdir" "$pkgdir$site_packages/strix_core"
+    install -Dm755 packaging/strix-core "$pkgdir/usr/bin/strix-core"
+    install -Dm755 packaging/control-helper "$pkgdir/usr/lib/strix-core/control-helper"
+    install -Dm644 packaging/io.github.hyprdodz.StrixCore.control.policy \
+        "$pkgdir/usr/share/polkit-1/actions/io.github.hyprdodz.StrixCore.control.policy"
+    install -Dm644 packaging/io.github.hyprdodz.StrixCore.desktop \
+        "$pkgdir/usr/share/applications/io.github.hyprdodz.StrixCore.desktop"
+    install -Dm644 strix_core/assets/strix-core.svg \
+        "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.hyprdodz.StrixCore.svg"
+    install -Dm644 docs/VALIDATION.md "$pkgdir/usr/share/doc/strix-core/REPORT.md"
+    install -Dm644 docs/VALIDATION.md "$pkgdir/usr/share/doc/strix-core/docs/VALIDATION.md"
+    install -Dm644 README.md "$pkgdir/usr/share/doc/strix-core/README.md"
+    install -Dm644 USAGE.md "$pkgdir/usr/share/doc/strix-core/USAGE.md"
+    install -Dm644 CONTRIBUTING.md "$pkgdir/usr/share/doc/strix-core/CONTRIBUTING.md"
+}
