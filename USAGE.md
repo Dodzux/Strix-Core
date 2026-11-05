@@ -29,6 +29,8 @@ Brightness uses your existing user access when permitted; it does not ask for au
 
 The native path passed bounded four-zone/breathing and 15-second smoothness checks without USB resets. Grouped updates and static wallpaper restoration were physically confirmed. Longer use and power-state transitions still need validation. Read the session status in the bottom bar; Diagnostics includes rendering rate, USB write duration and worker errors/reconnect counts. A failed session can be retried without restarting the app.
 
+If **Apply lighting** times out, the session stops instead of keeping the request queued for later. A USB write already in progress may finish before shutdown and the normal lighting hand-off. Wait for the worker to stop before retrying; a timed-out request does not resume automatically.
+
 ## M5 and Fn/AURA keys
 
 Open **Hotkeys**, review the events/actions and press **Apply shortcuts** in the fixed bottom action bar. This installs a dedicated companion file and a managed include in your Hyprland config. It checks existing bindings, saves a private backup and verifies the resulting live bindings. Conflicting desktop shortcuts are not overwritten.

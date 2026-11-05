@@ -1,4 +1,4 @@
-"""Reviewable Lua drafts. No global grabs or keybinding installation."""
+"""Validated Hyprland shortcut drafts and opt-in installation/removal."""
 import re
 
 ACTIONS = {"Keep existing": None, "Open Strix Core": "strix-core --page Dashboard",
@@ -30,7 +30,7 @@ def validate_event(name):
 
 def export_bindings(records):
     lines = ["-- Strix Core key draft · not installed",
-             "-- Keep the existing XF86Launch4 performance binding (physical key not captured).",
+             "-- Keep the existing XF86Launch4 performance binding.",
              "-- Fn is handled by firmware; ordinary F4 and F5 are never rebound here."]
     seen = set()
     for item in records:
@@ -52,8 +52,8 @@ def export_bindings(records):
     return "\n".join(lines) + "\n"
 
 
-# The installed ASUS HID driver maps the ROG key to PROG1 and AURA to PROG2.
-# These are defaults to review, not a claim that a physical press was captured.
+# M5 and Fn+F4 were captured as Launch1 and Launch3 on the G614PH.
+# These defaults must be reviewed on other hardware.
 DEFAULT_M5 = 'XF86Launch1'
 DEFAULT_AURA = 'XF86Launch3'
 PREVIOUS_AURA = 'XF86Launch2'

@@ -1,7 +1,10 @@
 from pathlib import Path
+import fcntl
 import tempfile
+import threading
 import time
 import unittest
+from unittest.mock import patch
 
 from strix_core.rgb_runtime import RGBSession, next_deadline
 
@@ -68,10 +71,6 @@ class RuntimeTests(unittest.TestCase):
         self.session.apply({'effect': 'Wave', 'zones': ['#ff0000', '#00ff00', '#0000ff', '#ffffff'], 'paused': True})
         time.sleep(.3)
         self.assertEqual(len(self.device.frames), 1)
-
-
-if __name__ == '__main__':
-    unittest.main()
 
 
 class RecoveryTests(unittest.TestCase):
@@ -179,6 +178,60 @@ class RecoveryTests(unittest.TestCase):
             session.apply({'effect':'Static','zones':['#123456']*4})
         self.assertLess(time.monotonic()-start, 1)
 
+    def test_timed_out_start_does_not_apply_when_desktop_lock_is_released(self):
+        device = Device()
+        session = self.make_session(lambda: device)
+        with (session.runtime / 'wallpaper-rgb.keyboard.lock').open('a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            with patch('strix_core.rgb_runtime.APPLY_TIMEOUT_SECONDS', .1):
+                with self.assertRaises(RuntimeError):
+                    session.apply({'effect': 'Static', 'zones': ['#123456'] * 4})
+        session.thread.join(timeout=1)
+        self.assertEqual(device.frames, [])
+        self.assertFalse(session.thread.is_alive())
+        self.assertEqual(device.acquired, 0)
+
+        # A deliberate retry starts a new worker after the cancelled one exits.
+        session.apply({'effect': 'Static', 'zones': ['#abcdef'] * 4})
+        self.assertEqual(device.frames[-1], [(171, 205, 239)] * 8)
+
+    def test_timed_out_update_does_not_apply_later(self):
+        device = Device()
+        session = self.make_session(lambda: device)
+        session.apply({'effect': 'Static', 'zones': ['#123456'] * 4})
+        with (session.runtime / 'wallpaper-rgb.keyboard.lock').open('a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            with patch('strix_core.rgb_runtime.APPLY_TIMEOUT_SECONDS', .1):
+                with self.assertRaises(RuntimeError):
+                    session.apply({'effect': 'Static', 'zones': ['#abcdef'] * 4})
+        session.thread.join(timeout=1)
+        self.assertEqual(device.frames, [[(18, 52, 86)] * 8])
+        self.assertFalse(session.thread.is_alive())
+        self.assertTrue(device.closed)
+
+    def test_apply_rejected_while_a_timed_out_write_is_still_stopping(self):
+        release = threading.Event()
+
+        class Slow(Device):
+            def write_colors(self, colors):
+                release.wait(2)
+                super().write_colors(colors)
+
+        device = Slow()
+        session = self.make_session(lambda: device)
+        self.addCleanup(release.set)
+        pattern = {'effect': 'Static', 'zones': ['#123456'] * 4}
+        with patch('strix_core.rgb_runtime.APPLY_TIMEOUT_SECONDS', .1):
+            with self.assertRaisesRegex(RuntimeError, 'stopping'):
+                session.apply(pattern)
+        with self.assertRaisesRegex(RuntimeError, 'still stopping'):
+            session.apply({'effect': 'Static', 'zones': ['#abcdef'] * 4})
+        release.set()
+        session.thread.join(timeout=1)
+        self.assertFalse(session.thread.is_alive())
+        self.assertEqual(device.frames, [[(18, 52, 86)] * 8])
+        self.assertTrue(device.closed)
+
     def test_native_animation_runs_without_restarting_at_heartbeat(self):
         class Native(Device):
             def can_animate(self, p):return p['effect']=='Breathing' and not p['paused']
@@ -205,3 +258,7 @@ class CadenceTests(unittest.TestCase):
     def test_missed_frames_are_skipped_without_catch_up_bursts(self):
         self.assertAlmostEqual(next_deadline(10,10.085),10.1)
         self.assertGreater(next_deadline(10,10.1),10.1)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -8,11 +8,11 @@ import threading
 import time
 
 from .lighting import ANIMATED, sample, validate_lighting
-from .rgb_device import LampArrayDevice
 
 RGB_OUTPUT_VERIFIED = True
 TRANSIENT = {errno.EIO, errno.ENODEV, errno.EPIPE, errno.EPROTO, errno.ETIMEDOUT, errno.EBADF}
 FRAME_SECONDS = 1 / 30
+APPLY_TIMEOUT_SECONDS = 6
 POSITIONS = (.125, .375, .625, .875, .875, .125, .875, .125)
 
 
@@ -74,6 +74,8 @@ class RGBSession:
             if self.thread and not self.thread.is_alive():
                 self.thread = None
                 self.error = None
+            if self.thread and self.stop_event.is_set():
+                raise RuntimeError('Lighting is still stopping. Retry shortly.')
             self.pattern = pattern
             self.revision += 1
             target = self.revision
@@ -88,13 +90,19 @@ class RGBSession:
                 self.thread = threading.Thread(target=self.run, name='strix-core-rgb', daemon=False)
                 self.thread.start()
             self.condition.notify_all()
-            deadline = time.monotonic() + 6
+            deadline = time.monotonic() + APPLY_TIMEOUT_SECONDS
             while self.applied_revision < target and not self.error:
                 if self.stop_event.is_set():
                     raise RuntimeError('Lighting stopped before the requested frame was applied.')
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
-                    raise RuntimeError('Lighting is waiting for the desktop RGB writer. Retry after it finishes.')
+                    # A failed Apply must not remain queued behind the desktop
+                    # writer and take over later without another user request.
+                    self.stop_event.set()
+                    self.state = 'stopping'
+                    self.condition.notify_all()
+                    raise RuntimeError('Lighting did not acknowledge the requested frame in time. '
+                                       'The effect is stopping; retry after it stops.')
                 self.condition.wait(remaining)
             if self.error:
                 raise RuntimeError(self.error)
@@ -161,6 +169,9 @@ class RGBSession:
                         self.stop_event.wait(.05)
                         continue
                     try:
+                        # Stop may arrive while acquiring the desktop lock.
+                        if self.stop_event.is_set():
+                            break
                         if not initialized:
                             device.open()
                         if not initialized or stamp != last_stamp or now-last_control >= .75:
